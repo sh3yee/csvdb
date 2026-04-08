@@ -18,7 +18,7 @@ func New(path string) *Data {
 	}
 }
 
-// Read 读取整个文件（header + table）
+// Read 读取整个文件
 func (d *Data) Read() error {
 	rf, err := os.Open(d.Path)
 	if err != nil {
@@ -43,7 +43,7 @@ func (d *Data) Read() error {
 	return nil
 }
 
-// Write 写入整个文件（header + table）
+// Write 写入整个文件
 func (d *Data) Write() error {
 	wf, err := os.OpenFile(d.Path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, fs.ModePerm)
 	if err != nil {
