@@ -49,7 +49,8 @@ func main() {
 
 | 方法 | 说明 |
 |------|------|
-| `Alter(before, after string) error` | 修改列名 |
+| `Alter(oldName, newName string) error` | 根据列名修改列名 |
+| `AlterByIndex(index int, newName string) error` | 根据索引修改列名 |
 
 #### 删除列
 
