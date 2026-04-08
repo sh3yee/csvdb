@@ -1,7 +1,6 @@
 package column
 
 import (
-	"fmt"
 	"gycsv/file"
 )
 

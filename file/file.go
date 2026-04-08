@@ -74,11 +74,6 @@ func (d *Data) ReadTable() error {
 }
 
 func (d *Data) WriteHeader() error {
-
-	if len(d.Header) == 1 {
-		d.Header = append(d.Header, "")
-	}
-
 	wf, err := os.OpenFile(d.Path, os.O_RDWR, fs.ModePerm)
 	if err != nil {
 		return err
@@ -94,11 +89,6 @@ func (d *Data) WriteHeader() error {
 	// 写入列名
 	writer := csv.NewWriter(wf)
 	defer writer.Flush()
-
-	//TODO 当表头数组的长度为1会出现bug，目测官方包底层bug，没能力修改
-	if len(d.Header) == 1 {
-
-	}
 
 	err = writer.Write(d.Header)
 	if err != nil {
