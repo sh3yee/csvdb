@@ -1,12 +1,12 @@
 package column
 
-import "gycsv/file"
+import "gycsv/internal/file"
 
 // DeleteByName 根据列名删除列
 func (c *Column) DeleteByName(name string) error {
 	rwf := file.New(c.Path)
 
-	if err := rwf.ReadHeader(); err != nil {
+	if err := rwf.Read(); err != nil {
 		return err
 	}
 
@@ -23,14 +23,14 @@ func (c *Column) DeleteByName(name string) error {
 		return ErrColumnNotFound
 	}
 
-	return c.deleteColumn(index)
+	return c.deleteColumn(rwf, index)
 }
 
 // DeleteByIndex 根据索引删除列
 func (c *Column) DeleteByIndex(index int) error {
 	rwf := file.New(c.Path)
 
-	if err := rwf.ReadHeader(); err != nil {
+	if err := rwf.Read(); err != nil {
 		return err
 	}
 
@@ -38,21 +38,11 @@ func (c *Column) DeleteByIndex(index int) error {
 		return ErrIndexOutOfRange
 	}
 
-	return c.deleteColumn(index)
+	return c.deleteColumn(rwf, index)
 }
 
 // deleteColumn 删除指定索引的列
-func (c *Column) deleteColumn(index int) error {
-	rwf := file.New(c.Path)
-
-	if err := rwf.ReadHeader(); err != nil {
-		return err
-	}
-
-	if err := rwf.ReadTable(); err != nil {
-		return err
-	}
-
+func (c *Column) deleteColumn(rwf *file.Data, index int) error {
 	// 从 header 中删除
 	rwf.Header = append(rwf.Header[:index], rwf.Header[index+1:]...)
 
@@ -63,9 +53,5 @@ func (c *Column) deleteColumn(index int) error {
 		}
 	}
 
-	if err := rwf.WriteHeader(); err != nil {
-		return err
-	}
-
-	return rwf.WriteTable()
+	return rwf.Write()
 }

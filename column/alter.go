@@ -1,18 +1,12 @@
 package column
 
-import "gycsv/file"
+import "gycsv/internal/file"
 
 // Alter 修改列名
 func (c *Column) Alter(before string, after string) error {
 	rwf := file.New(c.Path)
 
-	err := rwf.ReadHeader()
-	if err != nil {
-		return err
-	}
-
-	err = rwf.ReadTable()
-	if err != nil {
+	if err := rwf.Read(); err != nil {
 		return err
 	}
 
@@ -22,15 +16,5 @@ func (c *Column) Alter(before string, after string) error {
 		}
 	}
 
-	err = rwf.WriteHeader()
-	if err != nil {
-		return err
-	}
-
-	err = rwf.WriteTable()
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return rwf.Write()
 }
