@@ -74,7 +74,7 @@ func (d *Data) ReadTable() error {
 }
 
 func (d *Data) WriteHeader() error {
-	wf, err := os.OpenFile(d.Path, os.O_RDWR, fs.ModePerm)
+	wf, err := os.OpenFile(d.Path, os.O_RDWR|os.O_TRUNC, fs.ModePerm)
 	if err != nil {
 		return err
 	}
