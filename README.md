@@ -66,6 +66,16 @@ func main() {
 | `ErrColumnNotFound` | 列不存在 |
 | `ErrIndexOutOfRange` | 索引越界 |
 
+## 待开发功能
+
+| 模块 | 功能 | 状态 |
+|------|------|------|
+| Row | 行操作（增删改查） | 📌 待开发 |
+| Query | 条件查询、筛选 | ⏳ 计划中 |
+| Sort | 排序功能 | ⏳ 计划中 |
+| Aggregate | 聚合统计（COUNT/SUM/AVG/MIN/MAX） | ⏳ 计划中 |
+| Join | 多 CSV 文件关联 | ⏳ 计划中 |
+
 ## License
 
 [MIT](LICENSE)
