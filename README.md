@@ -117,6 +117,8 @@ type Condition struct {
 | 方法 | 说明 |
 |------|------|
 | `Select(columns ...string) *Result` | 选择特定列 |
+| `OrderBy(column, order string) *Result` | 单列排序，order 为 "asc" 或 "desc" |
+| `ThenBy(column, order string) *Result` | 多列排序，追加排序条件 |
 | `Limit(n int) *Result` | 限制结果数量 |
 | `Offset(n int) *Result` | 跳过前 N 条 |
 | `Get() ([][]string, error)` | 获取所有结果 |
@@ -144,6 +146,17 @@ rows, _ := q.FindIn("id", []string{"1", "2", "3"})
 // 模糊匹配
 rows, _ := q.Find(query.Condition{Column: "name", Op: "like", Value: "tom%"})
 
+// 排序
+rows, _ := q.FindAll().OrderBy("age", "desc").Get()
+
+// 多列排序
+rows, _ := q.FindAll().OrderBy("age", "asc").ThenBy("name", "desc").Get()
+
+// 查询 + 排序 + 分页
+rows, _ := q.FindAll(
+    query.Condition{Column: "status", Op: "=", Value: "active"},
+).OrderBy("created_at", "desc").Limit(10).Get()
+
 // 判断是否存在
 exists, _ := q.Find(query.Condition{Column: "id", Op: "=", Value: "1"}).Exists()
 ```
@@ -162,7 +175,7 @@ exists, _ := q.Find(query.Condition{Column: "id", Op: "=", Value: "1"}).Exists()
 |------|------|------|
 | Row | 行操作（增删改查） | ✅ 已完成 |
 | Query | 条件查询、筛选 | ✅ 已完成 |
-| Sort | 排序功能 | ⏳ 计划中 |
+| Sort | 排序功能 | ✅ 已完成 |
 | Aggregate | 聚合统计（COUNT/SUM/AVG/MIN/MAX） | ⏳ 计划中 |
 | Join | 多 CSV 文件关联 | ⏳ 计划中 |
 

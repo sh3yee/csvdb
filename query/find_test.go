@@ -337,3 +337,103 @@ func TestResult_Exists(t *testing.T) {
 		assert.False(t, exists)
 	})
 }
+
+func TestResult_OrderBy(t *testing.T) {
+	t.Run("should_sort_ascending", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
+			{"tom", "30"},
+			{"jerry", "20"},
+			{"spike", "25"},
+		})
+
+		q := New(path)
+		rows, err := q.FindAll().OrderBy("age", "asc").Get()
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{
+			{"jerry", "20"},
+			{"spike", "25"},
+			{"tom", "30"},
+		}, rows)
+	})
+
+	t.Run("should_sort_descending", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
+			{"tom", "20"},
+			{"jerry", "30"},
+			{"spike", "25"},
+		})
+
+		q := New(path)
+		rows, err := q.FindAll().OrderBy("age", "desc").Get()
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{
+			{"jerry", "30"},
+			{"spike", "25"},
+			{"tom", "20"},
+		}, rows)
+	})
+
+	t.Run("should_return_error_when_column_not_found", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
+			{"tom", "20"},
+		})
+
+		q := New(path)
+		_, err := q.FindAll().OrderBy("not_exist", "asc").Get()
+		assert.Equal(t, ErrColumnNotFound, err)
+	})
+
+	t.Run("should_sort_with_limit", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
+			{"tom", "30"},
+			{"jerry", "20"},
+			{"spike", "25"},
+		})
+
+		q := New(path)
+		rows, err := q.FindAll().OrderBy("age", "asc").Limit(2).Get()
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{
+			{"jerry", "20"},
+			{"spike", "25"},
+		}, rows)
+	})
+}
+
+func TestResult_ThenBy(t *testing.T) {
+	t.Run("should_sort_by_multiple_columns", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age", "city"}, [][]string{
+			{"tom", "20", "beijing"},
+			{"jerry", "25", "shanghai"},
+			{"spike", "20", "shanghai"},
+			{"tyke", "25", "beijing"},
+		})
+
+		q := New(path)
+		rows, err := q.FindAll().OrderBy("age", "asc").ThenBy("city", "asc").Get()
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{
+			{"tom", "20", "beijing"},
+			{"spike", "20", "shanghai"},
+			{"tyke", "25", "beijing"},
+			{"jerry", "25", "shanghai"},
+		}, rows)
+	})
+
+	t.Run("should_sort_by_multiple_columns_with_different_orders", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age", "city"}, [][]string{
+			{"tom", "20", "beijing"},
+			{"jerry", "25", "shanghai"},
+			{"spike", "20", "shanghai"},
+		})
+
+		q := New(path)
+		rows, err := q.FindAll().OrderBy("age", "desc").ThenBy("name", "asc").Get()
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{
+			{"jerry", "25", "shanghai"},
+			{"spike", "20", "shanghai"},
+			{"tom", "20", "beijing"},
+		}, rows)
+	})
+}
