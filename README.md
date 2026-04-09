@@ -91,6 +91,63 @@ func main() {
 | `GetBy(column, value string) ([][]string, error)` | 获取匹配条件的行 |
 | `GetAll() ([][]string, error)` | 获取所有行 |
 
+### Query - 查询操作
+
+#### 条件查询
+
+| 方法 | 说明 |
+|------|------|
+| `Find(cond Condition) ([][]string, error)` | 单条件查询 |
+| `FindAll(conds ...Condition) *Result` | 多条件查询，返回 Result 支持链式处理 |
+| `FindIn(column string, values []string) ([][]string, error)` | IN 查询 |
+| `FindNotIn(column string, values []string) ([][]string, error)` | NOT IN 查询 |
+
+#### Condition 结构体
+
+```go
+type Condition struct {
+    Column string
+    Op     string // "=", "!=", ">", "<", ">=", "<=", "like"
+    Value  string
+}
+```
+
+#### Result 链式方法
+
+| 方法 | 说明 |
+|------|------|
+| `Select(columns ...string) *Result` | 选择特定列 |
+| `Limit(n int) *Result` | 限制结果数量 |
+| `Offset(n int) *Result` | 跳过前 N 条 |
+| `Get() ([][]string, error)` | 获取所有结果 |
+| `First() ([]string, error)` | 获取第一条 |
+| `Count() (int, error)` | 统计数量 |
+| `Exists() (bool, error)` | 判断是否存在 |
+
+#### 查询示例
+
+```go
+q := query.New("users.csv")
+
+// 单条件查询
+rows, _ := q.Find(query.Condition{Column: "age", Op: ">", Value: "18"})
+
+// 多条件查询 + 选列 + 分页
+rows, _ := q.FindAll(
+    query.Condition{Column: "age", Op: ">=", Value: "18"},
+    query.Condition{Column: "city", Op: "=", Value: "Beijing"},
+).Select("name", "email").Limit(10).Offset(5).Get()
+
+// IN 查询
+rows, _ := q.FindIn("id", []string{"1", "2", "3"})
+
+// 模糊匹配
+rows, _ := q.Find(query.Condition{Column: "name", Op: "like", Value: "tom%"})
+
+// 判断是否存在
+exists, _ := q.Find(query.Condition{Column: "id", Op: "=", Value: "1"}).Exists()
+```
+
 ### 错误类型
 
 | 错误 | 说明 |
@@ -104,7 +161,7 @@ func main() {
 | 模块 | 功能 | 状态 |
 |------|------|------|
 | Row | 行操作（增删改查） | ✅ 已完成 |
-| Query | 条件查询、筛选 | 📌 待开发 |
+| Query | 条件查询、筛选 | ✅ 已完成 |
 | Sort | 排序功能 | ⏳ 计划中 |
 | Aggregate | 聚合统计（COUNT/SUM/AVG/MIN/MAX） | ⏳ 计划中 |
 | Join | 多 CSV 文件关联 | ⏳ 计划中 |
