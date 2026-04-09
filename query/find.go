@@ -18,7 +18,7 @@ func (q *Query) Find(cond Condition) ([][]string, error) {
 		return nil, ErrColumnNotFound
 	}
 
-	var result [][]string
+	result := make([][]string, 0)
 	for _, row := range rwf.Table {
 		if colIndex >= len(row) {
 			continue
@@ -36,17 +36,17 @@ func (q *Query) FindAll(conds ...Condition) *Result {
 	rwf := file.New(q.path)
 
 	if err := rwf.Read(); err != nil {
-		return &Result{rows: nil, header: nil, err: err}
+		return &Result{rows: [][]string{}, header: nil, err: err}
 	}
 
 	// 验证所有列是否存在
 	for _, cond := range conds {
 		if q.findColumnIndex(rwf.Header, cond.Column) == -1 {
-			return &Result{rows: nil, header: rwf.Header, err: ErrColumnNotFound}
+			return &Result{rows: [][]string{}, header: rwf.Header, err: ErrColumnNotFound}
 		}
 	}
 
-	var result [][]string
+	result := make([][]string, 0)
 	for _, row := range rwf.Table {
 		if q.matchAll(row, rwf.Header, conds) {
 			result = append(result, row)
@@ -74,7 +74,7 @@ func (q *Query) FindIn(column string, values []string) ([][]string, error) {
 		valueSet[v] = true
 	}
 
-	var result [][]string
+	result := make([][]string, 0)
 	for _, row := range rwf.Table {
 		if colIndex < len(row) && valueSet[row[colIndex]] {
 			result = append(result, row)
@@ -102,7 +102,7 @@ func (q *Query) FindNotIn(column string, values []string) ([][]string, error) {
 		valueSet[v] = true
 	}
 
-	var result [][]string
+	result := make([][]string, 0)
 	for _, row := range rwf.Table {
 		if colIndex < len(row) && !valueSet[row[colIndex]] {
 			result = append(result, row)

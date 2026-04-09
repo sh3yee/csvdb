@@ -11,6 +11,8 @@ type Result struct {
 	rows       [][]string
 	header     []string
 	sortOrders []sortOrder
+	limit      int
+	offset     int
 	err        error
 }
 
@@ -62,11 +64,7 @@ func (r *Result) Limit(n int) *Result {
 		return r
 	}
 
-	if n >= len(r.rows) {
-		return r
-	}
-
-	r.rows = r.rows[:n]
+	r.limit = n
 	return r
 }
 
@@ -76,12 +74,7 @@ func (r *Result) Offset(n int) *Result {
 		return r
 	}
 
-	if n >= len(r.rows) {
-		r.rows = nil
-		return r
-	}
-
-	r.rows = r.rows[n:]
+	r.offset = n
 	return r
 }
 
@@ -186,7 +179,11 @@ func (r *Result) Get() ([][]string, error) {
 		return nil, r.err
 	}
 
+	// 执行顺序：排序 -> Offset -> Limit
 	r.doSort()
+	r.applyOffset()
+	r.applyLimit()
+
 	return r.rows, nil
 }
 
@@ -211,7 +208,30 @@ func (r *Result) Count() (int, error) {
 	}
 
 	r.doSort()
+	r.applyOffset()
+	r.applyLimit()
+
 	return len(r.rows), nil
+}
+
+// applyOffset 应用偏移
+func (r *Result) applyOffset() {
+	if r.offset <= 0 {
+		return
+	}
+	if r.offset >= len(r.rows) {
+		r.rows = [][]string{}
+		return
+	}
+	r.rows = r.rows[r.offset:]
+}
+
+// applyLimit 应用限制
+func (r *Result) applyLimit() {
+	if r.limit <= 0 || r.limit >= len(r.rows) {
+		return
+	}
+	r.rows = r.rows[:r.limit]
 }
 
 // Exists 判断是否存在匹配结果

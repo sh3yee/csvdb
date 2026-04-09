@@ -321,7 +321,7 @@ func TestResult_Exists(t *testing.T) {
 		})
 
 		q := New(path)
-		exists, err := q.Find(Condition{Column: "name", Op: "=", Value: "tom"}).Exists()
+		exists, err := q.FindAll(Condition{Column: "name", Op: "=", Value: "tom"}).Exists()
 		assert.Nil(t, err)
 		assert.True(t, exists)
 	})
@@ -332,7 +332,7 @@ func TestResult_Exists(t *testing.T) {
 		})
 
 		q := New(path)
-		exists, err := q.Find(Condition{Column: "name", Op: "=", Value: "not_exist"}).Exists()
+		exists, err := q.FindAll(Condition{Column: "name", Op: "=", Value: "not_exist"}).Exists()
 		assert.Nil(t, err)
 		assert.False(t, exists)
 	})
@@ -435,5 +435,67 @@ func TestResult_ThenBy(t *testing.T) {
 			{"spike", "20", "shanghai"},
 			{"tom", "20", "beijing"},
 		}, rows)
+	})
+
+	t.Run("should_return_error_when_column_not_found", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
+			{"tom", "20"},
+		})
+
+		q := New(path)
+		_, err := q.FindAll().OrderBy("age", "asc").ThenBy("not_exist", "asc").Get()
+		assert.Equal(t, ErrColumnNotFound, err)
+	})
+}
+
+func TestQuery_Find_Additional(t *testing.T) {
+	t.Run("should_return_rows_when_greater_equal_condition", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
+			{"tom", "20"},
+			{"jerry", "25"},
+			{"spike", "30"},
+		})
+
+		q := New(path)
+		rows, err := q.Find(Condition{Column: "age", Op: ">=", Value: "25"})
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{{"jerry", "25"}, {"spike", "30"}}, rows)
+	})
+
+	t.Run("should_return_rows_when_less_equal_condition", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
+			{"tom", "20"},
+			{"jerry", "25"},
+			{"spike", "30"},
+		})
+
+		q := New(path)
+		rows, err := q.Find(Condition{Column: "age", Op: "<=", Value: "25"})
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{{"tom", "20"}, {"jerry", "25"}}, rows)
+	})
+
+	t.Run("should_return_rows_when_like_condition_without_wildcard", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name", "email"}, [][]string{
+			{"tom", "tom@example.com"},
+			{"jerry", "jerry@test.com"},
+		})
+
+		q := New(path)
+		rows, err := q.Find(Condition{Column: "name", Op: "like", Value: "tom"})
+		assert.Nil(t, err)
+		assert.Equal(t, [][]string{{"tom", "tom@example.com"}}, rows)
+	})
+}
+
+func TestQuery_FindNotIn_Additional(t *testing.T) {
+	t.Run("should_return_error_when_column_not_found", func(t *testing.T) {
+		path := testutil.CreateCSV(t, []string{"name"}, [][]string{
+			{"tom"},
+		})
+
+		q := New(path)
+		_, err := q.FindNotIn("not_exist", []string{"1"})
+		assert.Equal(t, ErrColumnNotFound, err)
 	})
 }
