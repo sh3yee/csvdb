@@ -161,6 +161,46 @@ rows, _ := q.FindAll(
 exists, _ := q.Find(query.Condition{Column: "id", Op: "=", Value: "1"}).Exists()
 ```
 
+#### 聚合统计
+
+| 方法 | 说明 |
+|------|------|
+| `Count() (int, error)` | 统计数量 |
+| `Sum(column string) (float64, error)` | 计算指定列的总和 |
+| `Avg(column string) (float64, error)` | 计算指定列的平均值 |
+| `Min(column string) (string, error)` | 获取指定列的最小值（字符串比较） |
+| `Max(column string) (string, error)` | 获取指定列的最大值（字符串比较） |
+| `MinFloat(column string) (float64, error)` | 获取指定列的最小值（数值比较） |
+| `MaxFloat(column string) (float64, error)` | 获取指定列的最大值（数值比较） |
+
+#### 聚合示例
+
+```go
+q := query.New("users.csv")
+
+// 统计数量
+count, _ := q.FindAll().Count()
+
+// 总和
+total, _ := q.FindAll().Sum("amount")
+
+// 平均值
+avg, _ := q.FindAll().Avg("age")
+
+// 最小值/最大值（字符串比较）
+minName, _ := q.FindAll().Min("name")
+maxName, _ := q.FindAll().Max("name")
+
+// 最小值/最大值（数值比较）
+minAge, _ := q.FindAll().MinFloat("age")
+maxAge, _ := q.FindAll().MaxFloat("age")
+
+// 条件过滤后聚合
+total, _ := q.FindAll(
+    query.Condition{Column: "status", Op: "=", Value: "active"},
+).Sum("amount")
+```
+
 ### 错误类型
 
 | 错误 | 说明 |
@@ -176,8 +216,7 @@ exists, _ := q.Find(query.Condition{Column: "id", Op: "=", Value: "1"}).Exists()
 | Row | 行操作（增删改查） | ✅ 已完成 |
 | Query | 条件查询、筛选 | ✅ 已完成 |
 | Sort | 排序功能 | ✅ 已完成 |
-| Aggregate | 聚合统计（COUNT/SUM/AVG/MIN/MAX） | ⏳ 计划中 |
-| Join | 多 CSV 文件关联 | ⏳ 计划中 |
+| Aggregate | 聚合统计（COUNT/SUM/AVG/MIN/MAX） | ✅ 已完成 |
 
 ## License
 
