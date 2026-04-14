@@ -1,6 +1,6 @@
 package column
 
-import "github.com/sheye/csvdb/internal/file"
+import "github.com/sh3yee/csvdb/internal/file"
 
 // Add 添加新列到末尾
 func (c *Column) Add(field string) error {

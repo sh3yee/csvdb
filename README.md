@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-go get github.com/sheye/csvdb
+go get github.com/sh3yee/csvdb
 ```
 
 ## 快速开始
@@ -14,8 +14,8 @@ go get github.com/sheye/csvdb
 package main
 
 import (
-    "github.com/sheye/csvdb/column"
-    "github.com/sheye/csvdb/row"
+    "github.com/sh3yee/csvdb/column"
+    "github.com/sh3yee/csvdb/row"
 )
 
 func main() {

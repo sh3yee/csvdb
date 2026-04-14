@@ -1,6 +1,6 @@
 package column
 
-import "github.com/sheye/csvdb/internal/file"
+import "github.com/sh3yee/csvdb/internal/file"
 
 // DeleteByName 根据列名删除列
 func (c *Column) DeleteByName(name string) error {

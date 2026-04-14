@@ -1,4 +1,4 @@
-module github.com/sheye/csvdb
+module github.com/sh3yee/csvdb
 
 go 1.18
 

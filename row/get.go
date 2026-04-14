@@ -1,6 +1,6 @@
 package row
 
-import "github.com/sheye/csvdb/internal/file"
+import "github.com/sh3yee/csvdb/internal/file"
 
 // Get 获取指定索引的行
 func (r *Row) Get(index int) ([]string, error) {

@@ -1,6 +1,6 @@
 package column
 
-import "github.com/sheye/csvdb/internal/file"
+import "github.com/sh3yee/csvdb/internal/file"
 
 // Alter 根据列名修改列名
 func (c *Column) Alter(oldName string, newName string) error {

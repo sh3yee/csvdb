@@ -1,7 +1,7 @@
 package query
 
 import (
-	"github.com/sheye/csvdb/internal/file"
+	"github.com/sh3yee/csvdb/internal/file"
 	"strings"
 )
 
