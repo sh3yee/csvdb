@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"gycsv/testutil"
+	"github.com/sheye/csvdb/testutil"
 )
 
 func TestColumn_Alter(t *testing.T) {

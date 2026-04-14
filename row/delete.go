@@ -1,6 +1,6 @@
 package row
 
-import "gycsv/internal/file"
+import "github.com/sheye/csvdb/internal/file"
 
 // Delete 删除指定索引的行
 func (r *Row) Delete(index int) error {

@@ -5,7 +5,7 @@
 ## 安装
 
 ```bash
-go get gycsv
+go get github.com/sheye/csvdb
 ```
 
 ## 快速开始
@@ -14,8 +14,8 @@ go get gycsv
 package main
 
 import (
-    "gycsv/column"
-    "gycsv/row"
+    "github.com/sheye/csvdb/column"
+    "github.com/sheye/csvdb/row"
 )
 
 func main() {

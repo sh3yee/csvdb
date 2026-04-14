@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"gycsv/testutil"
+	"github.com/sheye/csvdb/testutil"
 )
 
 func TestAggregate_Sum(t *testing.T) {

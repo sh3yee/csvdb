@@ -1,7 +1,7 @@
 package query
 
 import (
-	"gycsv/internal/file"
+	"github.com/sheye/csvdb/internal/file"
 	"strings"
 )
 
