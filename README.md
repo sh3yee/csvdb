@@ -8,6 +8,26 @@
 go get github.com/sh3yee/csvdb
 ```
 
+## 导入方式
+
+本项目主要通过子包使用：
+
+```go
+import (
+    "github.com/sh3yee/csvdb/column"
+    "github.com/sh3yee/csvdb/row"
+    "github.com/sh3yee/csvdb/query"
+)
+```
+
+说明：根路径 `github.com/sh3yee/csvdb` 主要用于模块索引与文档入口，实际功能请从子包导入。
+
+如果你使用 gopkg.in，可使用：
+
+```bash
+go get gopkg.in/sh3yee/csvdb.v1
+```
+
 ## 快速开始
 
 ```go
