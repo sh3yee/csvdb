@@ -8,6 +8,25 @@
 
 A Go library to operate CSV files like a database.
 
+## Why
+
+This library comes from real project needs, for example when using ansible to process configuration-related files:
+
+- I often need fine-grained CSV edits, such as updating a specific row.
+
+More specifically, these are the recurring pain points:
+
+- I only want to change one column or a few rows, but still end up writing repetitive read/write code.
+- The business need is CRUD-like, but the code only has low-level CSV operations and gets scattered quickly.
+- One-off scripts keep growing and become hard to reuse or keep behavior consistent.
+- Filtering, sorting, pagination, and aggregation come up repeatedly, and rebuilding them each time is costly.
+
+So the goal of this library is to provide a smoother way to work:
+
+- Operate CSV with a database-like mental model.
+- Package high-frequency actions (column ops, row ops, query and aggregation) into reusable APIs.
+- Keep daily data-processing scripts shorter, more stable, and easier to maintain.
+
 ## Installation
 
 ```bash
