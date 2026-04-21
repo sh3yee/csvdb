@@ -1,23 +1,13 @@
 package query
 
 import (
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/sh3yee/csvdb/testutil"
 )
 
 func TestAggregate_Sum(t *testing.T) {
-	dir, err := os.MkdirTemp("", "csvdb_test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	path := filepath.Join(dir, "test.csv")
-	testutil.CreateCSV(path, [][]string{
-		{"name", "age", "salary"},
+	path := testutil.CreateCSV(t, []string{"name", "age", "salary"}, [][]string{
 		{"Alice", "25", "5000"},
 		{"Bob", "30", "6000"},
 		{"Charlie", "35", "7000"},
@@ -37,7 +27,7 @@ func TestAggregate_Sum(t *testing.T) {
 	}
 
 	// 测试条件过滤后的求和
-	result2 := New(path).Find("age", ">", "25")
+	result2 := New(path).FindAll(Condition{Column: "age", Op: ">", Value: "25"})
 	sum2, err := result2.Sum("salary")
 	if err != nil {
 		t.Fatalf("Sum with condition failed: %v", err)
@@ -50,15 +40,7 @@ func TestAggregate_Sum(t *testing.T) {
 }
 
 func TestAggregate_Avg(t *testing.T) {
-	dir, err := os.MkdirTemp("", "csvdb_test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	path := filepath.Join(dir, "test.csv")
-	testutil.CreateCSV(path, [][]string{
-		{"name", "age", "salary"},
+	path := testutil.CreateCSV(t, []string{"name", "age", "salary"}, [][]string{
 		{"Alice", "25", "5000"},
 		{"Bob", "30", "6000"},
 		{"Charlie", "35", "7000"},
@@ -78,7 +60,7 @@ func TestAggregate_Avg(t *testing.T) {
 	}
 
 	// 测试空结果
-	result2 := New(path).Find("age", ">", "100")
+	result2 := New(path).FindAll(Condition{Column: "age", Op: "<", Value: "0"})
 	avg2, err := result2.Avg("age")
 	if err != nil {
 		t.Fatalf("Avg on empty result failed: %v", err)
@@ -90,15 +72,7 @@ func TestAggregate_Avg(t *testing.T) {
 }
 
 func TestAggregate_MinMax(t *testing.T) {
-	dir, err := os.MkdirTemp("", "csvdb_test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	path := filepath.Join(dir, "test.csv")
-	testutil.CreateCSV(path, [][]string{
-		{"name", "age", "salary"},
+	path := testutil.CreateCSV(t, []string{"name", "age", "salary"}, [][]string{
 		{"Alice", "25", "5000"},
 		{"Bob", "30", "6000"},
 		{"Charlie", "35", "7000"},
@@ -143,20 +117,13 @@ func TestAggregate_MinMax(t *testing.T) {
 }
 
 func TestAggregate_ColumnNotFound(t *testing.T) {
-	dir, err := os.MkdirTemp("", "csvdb_test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	path := filepath.Join(dir, "test.csv")
-	testutil.CreateCSV(path, [][]string{
-		{"name", "age"},
+	path := testutil.CreateCSV(t, []string{"name", "age"}, [][]string{
 		{"Alice", "25"},
 	})
 
 	q := New(path)
 	result := q.FindAll()
+	var err error
 
 	_, err = result.Sum("nonexistent")
 	if err != ErrColumnNotFound {
@@ -180,15 +147,7 @@ func TestAggregate_ColumnNotFound(t *testing.T) {
 }
 
 func TestAggregate_WithNonNumericValues(t *testing.T) {
-	dir, err := os.MkdirTemp("", "csvdb_test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	path := filepath.Join(dir, "test.csv")
-	testutil.CreateCSV(path, [][]string{
-		{"name", "value"},
+	path := testutil.CreateCSV(t, []string{"name", "value"}, [][]string{
 		{"Alice", "100"},
 		{"Bob", "not_a_number"},
 		{"Charlie", "200"},
@@ -221,15 +180,7 @@ func TestAggregate_WithNonNumericValues(t *testing.T) {
 }
 
 func TestAggregate_WithLimit(t *testing.T) {
-	dir, err := os.MkdirTemp("", "csvdb_test")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer os.RemoveAll(dir)
-
-	path := filepath.Join(dir, "test.csv")
-	testutil.CreateCSV(path, [][]string{
-		{"name", "value"},
+	path := testutil.CreateCSV(t, []string{"name", "value"}, [][]string{
 		{"A", "10"},
 		{"B", "20"},
 		{"C", "30"},

@@ -39,7 +39,7 @@ func (r *Row) GetBy(column, value string) ([][]string, error) {
 	}
 
 	// 筛选匹配的行
-	var result [][]string
+	result := make([][]string, 0)
 	for _, row := range rwf.Table {
 		if colIndex < len(row) && row[colIndex] == value {
 			result = append(result, row)
@@ -55,6 +55,10 @@ func (r *Row) GetAll() ([][]string, error) {
 
 	if err := rwf.Read(); err != nil {
 		return nil, err
+	}
+
+	if rwf.Table == nil {
+		return [][]string{}, nil
 	}
 
 	return rwf.Table, nil
