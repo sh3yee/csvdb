@@ -1,5 +1,9 @@
 # csvdb
 
+[![Reference](https://pkg.go.dev/badge/github.com/sh3yee/csvdb.svg)](https://pkg.go.dev/github.com/sh3yee/csvdb)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/sh3yee/csvdb?logo=go)](go.mod)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sh3yee/csvdb)](https://goreportcard.com/report/github.com/sh3yee/csvdb)
+
 [English](README.md) | [中文](README_CN.md)
 
 像操作数据库一样操作 CSV 文件的 Go 库。
